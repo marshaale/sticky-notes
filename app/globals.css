@@ -1,0 +1,22 @@
+:root { --bg: #f4f4f5; --text: #18181b; }
+@media (prefers-color-scheme: dark) { :root { --bg: #18181b; --text: #f4f4f5; } }
+* { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--bg); color: var(--text);
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+main { max-width: 1000px; margin: 0 auto; padding: 24px 16px 64px; }
+header { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between; margin-bottom: 24px; }
+h1 { margin: 0; font-size: 1.6rem; }
+.controls { display: flex; align-items: center; gap: 14px; }
+.swatches { display: flex; gap: 6px; }
+.swatch { width: 24px; height: 24px; border-radius: 50%; border: 2px solid transparent; cursor: pointer; }
+.swatch.active { border-color: var(--text); }
+.add { background: var(--text); color: var(--bg); border: 0; border-radius: 8px; padding: 9px 16px; font-weight: 600; cursor: pointer; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; }
+.note { color: #1c1917; border-radius: 6px; padding: 12px; min-height: 200px; display: flex; flex-direction: column; box-shadow: 0 4px 10px rgba(0,0,0,.18); transform: rotate(-.6deg); }
+.note:nth-child(even) { transform: rotate(.7deg); }
+.note textarea { flex: 1; resize: none; border: 0; background: transparent; font: inherit; font-size: 1rem; color: inherit; outline: none; }
+.note footer { display: flex; justify-content: space-between; align-items: center; font-size: .75rem; opacity: .7; }
+.note footer button { background: none; border: 0; cursor: pointer; font-size: 1rem; color: inherit; }
+.empty { opacity: .6; text-align: center; margin-top: 60px; }
