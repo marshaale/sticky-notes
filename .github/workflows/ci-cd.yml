@@ -1,0 +1,66 @@
+name: CI/CD
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: 24.x
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Check code
+        run: npm run lint
+
+      - name: Check for vulnerabilities
+        run: npm run audit
+
+      - name: Build project
+        run: npm run build
+
+      - name: Prune dev dependencies
+        run: npm prune --omit=dev
+
+      - name: Start server & health check
+        run: |
+          npx next start -H 127.0.0.1 -p 3000 &
+          sleep 5
+          curl --fail --silent --retry 10 --retry-delay 2 --retry-connrefused http://127.0.0.1:3000/api/health
+          curl --fail --silent --output /dev/null http://127.0.0.1:3000/
+
+      - name: Pack the release
+        if: github.event_name != 'pull_request'
+        run: |
+          tar --exclude='.git' --exclude='./.next/cache'  --exclude='.github' --exclude='*.log' --exclude='*.tmp' -czf "$RUNNER_TEMP/release.tar.gz" .
+          mv "$RUNNER_TEMP/release.tar.gz" release.tar.gz
+          sha256sum release.tar.gz | cut -d ' ' -f 1 > release.sha256
+
+      - name: Save release artifacts
+        if: github.event_name != 'pull_request'
+        uses: actions/upload-artifact@v7
+        with:
+          name: release
+          path: |
+            release.tar.gz
+            release.sha256
+          retention-days: 7
+          compression-level: 0
