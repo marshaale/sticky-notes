@@ -72,7 +72,7 @@ export default function Home() {
           <article key={note.id} className="note" style={{ background: note.color }}>
             <textarea
               value={note.text}
-              placeholder="Write something..."
+              placeholder="Write note..."
               maxLength={2000}
               onChange={(e) => patch(note.id, { text: e.target.value })}
             />
