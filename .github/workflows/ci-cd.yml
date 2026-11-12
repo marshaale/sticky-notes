@@ -99,7 +99,7 @@ jobs:
           DEPLOY_USER: deploy
           DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
         run: |
-          tar -cf release.tar.gz | ssh -i ~/.ssh/id_ed25519 -o BatchMode=yes -o StrictHostKeyChecking=yes $DEPLOY_USER@$DEPLOY_HOST "$GITHUB_SHA $(cat release.sha256)"
+          tar -cf - release.tar.gz | ssh -i ~/.ssh/id_ed25519 -o BatchMode=yes -o StrictHostKeyChecking=yes $DEPLOY_USER@$DEPLOY_HOST "$GITHUB_SHA $(cat release.sha256)"
 
       - name: Delete key files
         if: always()
